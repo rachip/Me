@@ -623,8 +623,9 @@ ul.propertyDetails li span:first-child:after {
 }
 
 .checkboxFive {
-    width: 25px;
-    position: relative;
+	width: 25px;
+    position: absolute;
+    right: 50px;
 }
 
 .checkboxFive label {
