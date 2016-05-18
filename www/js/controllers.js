@@ -14,7 +14,7 @@ angular.module('starter.controllers', ['firebase', 'ngSanitize'])
 .controller('AppCtrl', function($scope, $location, $state, $ionicConfig, $rootScope, $http, $ionicPopup) {
 
 	$scope.selectChat = function() {
-		console.log('click chat ' + $rootScope.propertyCnt);
+		//console.log('click chat ' + $rootScope.propertyCnt);
 		$state.go('chatMain');
 	}  
 })
