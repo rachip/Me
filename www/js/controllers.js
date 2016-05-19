@@ -639,34 +639,54 @@ angular.module('starter.controllers', ['firebase', 'ngSanitize'])
 		});			
 	});
 	
+	function getMinsSecs() {
+		  var dt = new Date();
+		  return dt.getMinutes()+":"+dt.getSeconds();
+	}
+
 	$ionicModal.fromTemplateUrl('my-modal.html', {
 	    scope: $scope,
 	    animation: 'slide-in-up'
 	  }).then(function(modal) {
 	    $scope.modal = modal;
-	  });
-	  $scope.openModal = function(typeId) {
+	});
+	
+	$ionicModal.fromTemplateUrl('modalPDF.html', {
+	    scope: $scope,
+	    animation: 'slide-in-up'
+	  }).then(function(modal) {
+	    $scope.modalPDF = modal;
+	});
+	  
+	$scope.openModal = function(typeId) {
 		  //var ref = cordova.InAppBrowser.open('http://ec2-52-32-92-71.us-west-2.compute.amazonaws.com/uploads/thumb_14626903231450773143download.jpg', '_blank', 'location=yes');
-
-		 $scope.modal.show();			  
-		  $http({
-			    url: 'http://ec2-52-32-92-71.us-west-2.compute.amazonaws.com/index.php/api/GetFiles/getPropertyFile', 
-			    method: "GET",
-			    params:  {propertyId: propertyId, typeId: typeId}, 
-			    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-			}).then(function(resp) {
-				if (resp.data.length != 0) {					
-					$scope.sliderImg = resp.data;
-				} 		
-			}, function(err) {
-			    console.error('ERR', err);
-			})
-	  };
-	  $scope.closeModal = function() { 
+		$scope.modal.show();			  
+		$http({
+		    url: 'http://ec2-52-32-92-71.us-west-2.compute.amazonaws.com/index.php/api/GetFiles/getPropertyFile', 
+		    method: "GET",
+		    params:  {propertyId: propertyId, typeId: typeId}, 
+		    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+		}).then(function(resp) {
+			if (resp.data.length != 0) {					
+				$scope.sliderImg = resp.data;
+				
+				// set default image to files in case they are not pictures.
+	    		for(var i = 0; i < $scope.sliderImg.length; i++) {
+	    			$scope.sliderImg[i].Src = $scope.sliderImg[i].FileName;
+	    			fileExtention($scope.sliderImg[i]);
+	    			//$scope.sliderImg[i].FileName = fileExtention($scope.sliderImg[i].FileName);
+	    		}
+			} 		
+		}, function(err) {
+		    console.error('ERR', err);
+		})
+	};
+	
+	$scope.closeModal = function() { 
 		  $scope.sliderImg = null;
 		  $scope.modal.hide();
-	  };
-	  // Cleanup the modal when we're done with it!
+	};
+	/*  // Cleanup the modal when we're done with it!
 	  $scope.$on('$destroy', function() {
 	    $scope.modal.remove();
 	  });
@@ -677,8 +697,19 @@ angular.module('starter.controllers', ['firebase', 'ngSanitize'])
 	  // Execute action on remove modal
 	  $scope.$on('modal.removed', function() {
 	    // Execute action
-	  });
+	  });*/
 	
+	$scope.openModalPDF = function(type, src) {		
+		if(type == "PDF") {
+			$scope.modalPDF.show();	
+		}
+		$('.iframePDF').attr('src', 'http://ec2-52-32-92-71.us-west-2.compute.amazonaws.com/uploads/' + src);	
+	};
+	
+	$scope.closeModalPDF = function() { 
+		  $scope.modalPDF.hide();
+	};
+	  
 	$scope.click = function(section) {		
 		switch(section){
 			case 0:
@@ -1704,6 +1735,26 @@ function updateClientRead($http, propertyId, section) {
 	});
 }
 
+function fileExtention(obj) {
+	var ext = obj.FileName.substr(obj.FileName.lastIndexOf('.') + 1);
+	var src;
+	switch(ext){
+		case "pdf":
+			obj.FileName = "pdf-file.png";
+			obj.Type = "PDF";
+			break;
+		case "docx":
+		case "doc":
+			obj.FileName = "doc-file.png";
+			obj.Type = "DOC";
+			break;
+		default:
+			obj.FileName = obj.FileName;
+			obj.Type = "IMG";
+	}
+	return src;
+}
+
 function check_new_chatc($firebaseObject ,$firebaseArray, branchName, thisUserId) {
 	var ref = new Firebase("https://updatemeapp.firebaseio.com/messages/" + branchName + "/" + thisUserId);
 	chats = $firebaseArray(ref);
@@ -1738,8 +1789,6 @@ function get_new_not($http) {
 				}, function(err) {
 				    console.error('ERR', err);
 				})	
-	
-		   
 		}
 		
 	}, function(err) {

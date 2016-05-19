@@ -795,6 +795,14 @@ ul.propertyDetails li span:first-child:after {
     vertical-align: bottom;
 }
 
+.propertySliderImg {
+	width: 100%;
+    height: 300px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 /* ********************************************** */
 /* Marketing Details page */
 .slider-pager .slider-pager-page {

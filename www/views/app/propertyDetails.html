@@ -471,6 +471,10 @@
 				    	<span class="updateClientCircle" ng-if="showUpdateClientEviction">Updated</span>
 				    </a> 
 			  	</span>
+			  	<span>
+			  		<i ng-show="IsHasEvictionFile && showEviction == 1" class="icon ion-images left-10"
+			  		   ng-click="openModal(19)"></i>
+			  	</span>
 	 		</h4>
 			<i class="icon pointer arrow" 
 			ng-class="showEviction == 1 ? 'animated fadeIn ion-chevron-up' : 'animated fadeIn ion-chevron-down'"></i>   
@@ -609,18 +613,33 @@
 
 <script id="my-modal.html" type="text/ng-template">
 	<ion-modal-view>
-    	<ion-header-bar>
-    		<h1 class="title">My Modal title</h1>
+    	<ion-header-bar class="bar-stable bar bar-header">
+    		<h1 class="title">Image Slider</h1>
 			<button class="button button-clear button-primary" ng-click="closeModal()">Cancel</button>	
     	</ion-header-bar>
     	<ion-content>
 			<ion-slide-box ng-if="sliderImg">
 		   		<ion-slide ng-repeat="img in sliderImg">
-			  	  <div class="propertyImg" 
-			   	 	ng-style="{'background-image':'url(http://ec2-52-32-92-71.us-west-2.compute.amazonaws.com/uploads/{{ img.FileName }})'}">		    
+			  	  <div class="propertySliderImg" 
+			   	 	ng-style="{'background-image':'url(http://ec2-52-32-92-71.us-west-2.compute.amazonaws.com/uploads/{{ img.FileName }})'}"
+					ng-click="openModalPDF(img.Type, img.Src)">		    
 			   	  </div>
 			  	</ion-slide>	   	
 		   	</ion-slide-box>
+    	</ion-content>
+	</ion-modal-view>
+</script>
+
+<script id="modalPDF.html" type="text/ng-template">
+	<ion-modal-view>
+    	<ion-header-bar class="bar-stable bar bar-header">
+    		<h1 class="title">View File</h1>
+			<button class="button button-clear button-primary" ng-click="closeModalPDF()">Cancel</button>	
+    	</ion-header-bar>
+    	<ion-content>
+			<div style="width:100%;height:600px;overflow:auto;-webkit-overflow-scrolling:touch">
+				<iframe class="iframePDF" style="width:100%;height:550px;overflow:scroll;"></iframe>
+			</div>
     	</ion-content>
 	</ion-modal-view>
 </script>
